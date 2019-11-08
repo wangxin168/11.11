@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>提交成功</title>
+		<script>
+			(function() {
+				var html = document.documentElement;
+				var width = html.getBoundingClientRect().width;
+				if (width < 640) {
+					html.style.fontSize = width / 15 + "px";
+				} else {
+					width = 640;
+					html.style.fontSize = width / 15 + "px";
+				}
+			})();
+		</script>
+
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+		<!-- <script type="text/javascript" src="js/qrcode.js"></script> -->
+		<script type="text/javascript" src="js/jquery.qrcode.min.js"></script>
+
+		<style>
+			* {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            /*禁止在IOS下点击元素显示高亮*/
+            -webkit-touch-callout: none;
+            /*禁止在IOS上点击元素显示系统默认菜单*/
+            -webkit-text-size-adjust: 100%;
+            /*禁止字体变化 */
+        }
+
+        body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #a10f19;
+            color: #999999;
+            font-size: 15px;
+            line-height: 1.42857143;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+
+        img {
+            display: block;
+            height: 100%;
+            width: 100%;
+        }
+
+        #app {
+            min-height: 26rem;
+            position: relative;
+        }
+
+        .ditu {
+            width: 100%;
+            height: 26rem;
+            background-image: url('../image/生成海报页面-1_01.jpg');
+            background-size: 100% 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .cont {
+            width: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            padding-top: 3.5rem;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .canvas-k {
+            width: 300px;
+            height: 414px;
+            background-color: #D79A9D;
+            margin: 10px auto;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .tishi-text {
+            font-size: 12px;
+            text-align: center;
+            color: #e5cccc;
+            padding-bottom: 30px;
+        }
+
+        .xian {
+            margin: 10px 0;
+            height: 1px;
+            background-image: linear-gradient(to right, #a10f19, #fd2a21, #ffffff, #FD2A21, #a10f19)
+        }
+
+        .lianjie {
+            width: 11rem;
+            margin: auto;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: bold;
+            line-height: 1.7;
+            display:block;
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+
+        #tch {
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: none;
+        }
+
+        .tch-cont {
+            height: 45px;
+            font-size: 15px;
+            width: 70%;
+            text-align: center;
+            line-height: 45px;
+            color: #f8f8f8;
+            position: absolute;
+            top: 50%;
+            margin-top: -22px;
+            left: 15%;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        #iimg {
+            display: none
+        }
+    </style>
+	</head>
+
+	<body>
+
+		<div id="app">
+			<div class="ditu"></div>
+			<div class="cont">
+				<div class="title">提交成功</div>
+				<div id="mydiv" class="canvas-k">
+					<img id="iimg" src="" alt="">
+					<img id="c_img" src="" alt="" crossorigin="anonymous">
+					<canvas id="canvas" style="display: none"></canvas>
+				</div>
+				<div class="tishi-text" style="font-size: 18px;">长按保存海报</div>
+				<div class="xian"></div>
+				<div id="url_lianjie" class="lianjie">URL 地址</div>
+				<div class="tishi-text">长按复制链接</div>
+				<div id="qrcode" style="display: none;"></div>
+			</div>
+			<div id="tch">
+				<div id="tch_cont" class="tch-cont">加载中</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+			window.onload = function() {
+
+
+				var dt = sessionStorage.getItem("demokey");
+				var data = JSON.parse(dt)
+				var lianjie_url = ''
+				// if (data.hd_index == 1) { lianjie_url = 'https://mall.ftms.com.cn/wx/activityNovember'; }
+				// if (data.hd_index == 2) { lianjie_url = 'https://mall.ftms.com.cn/wx/activityNovember'; }
+				// if (data.hd_index == 3) { lianjie_url = 'http://eleven.test511.com/index.html'; }
+				// if (data.hd_index == 4) { lianjie_url = 'https://mall.ftms.com.cn/wx/activityNovember'; }
+				// if (data.hd_index == 5) { lianjie_url = 'https://mall.ftms.com.cn/wx/activityNovember'; }
+				// if (data.hd_index == 6) { lianjie_url = 'https://mall.ftms.com.cn/wx/activityNovember'; }
+
+				//测试
+				if (data.hd_index == 1) {
+					lianjie_url = 'https://mall.ftms.devbmsoft.cn/wx/activityNovember';
+				}
+				if (data.hd_index == 2) {
+					lianjie_url = 'https://mall.ftms.devbmsoft.cn/wx/activityNovember';
+				}
+				if (data.hd_index == 3) {
+					lianjie_url = 'http://eleven.test511.com/index.html';
+				}
+				if (data.hd_index == 4) {
+					lianjie_url = 'https://mall.ftms.devbmsoft.cn/wx/activityNovember';
+				}
+				if (data.hd_index == 5) {
+					lianjie_url = 'https://mall.ftms.devbmsoft.cn/wx/activityNovember';
+				}
+				if (data.hd_index == 6) {
+					lianjie_url = 'https://mall.ftms.devbmsoft.cn/wx/activityNovember';
+				}
+
+				var lianjie = lianjie_url + '?province=' + data.provinceid + '&city=' + data.cityid + '&dealer=' + data.j_id;
+				data.hd_url = lianjie;
+				var b64_image = ''
+				$('#url_lianjie').text(lianjie)
+				//      var qrcode = new QRCode('qrcode', {
+				//          text: lianjie,//网址
+				//          width: 256,
+				//          height: 256,
+				//          colorDark: '#000000',
+				//          colorLight: '#ffffff',
+				//          correctLevel: QRCode.CorrectLevel.H,
+				// render:'table'
+				//      });
+
+				jQuery('#qrcode').qrcode({
+					render:'canvas',
+					width: 256,
+					height: 256,
+					correctLevel: 0,
+					text: lianjie
+				});
+
+				var url = 'http://intf.billdev.test511.com/index.php?g=Fawtoyota&m=Jxs&a=is_not' //测试
+				//var url = 'http://intf.bill.test511.com/index.php?g=Fawtoyota&m=Jxs&a=is_not'//正式
+
+				$.ajax({
+					// type:"post",
+					url: url,
+					data: data,
+					success: function(ress) {
+						var res = JSON.parse(ress)
+						// console.log(res)
+						if (res.status != 200 || res.status != 600) {
+							tishi_tanchuang('服务器错误')
+						}
+						if (res.status == 200) {
+							if (res.data == null) {
+								he()
+							} else {
+								$("#img_pre").attr("src", res.data);
+								$('#c_img').hide()
+								$('#iimg').attr('src', res.data)
+								$('#iimg').show()
+							}
+							return
+						}
+						if (res.status == 600) { //需要合成图片
+							// console.log(888)
+							$('#c_img').show()
+							$('#iimg').hide()
+							he()
+						}
+
+					}
+				})
+
+				function he() {
+					var canvas = document.getElementsByTagName('canvas')
+					var cxt = canvas[0].getContext('2d');
+					canvas[0].width = 787;
+					canvas[0].height = 1092;
+					var img_a = new Image();
+					if (data.hd_index == 1) {
+						img_a.src = 'image/rongfang.jpg'
+					}
+					if (data.hd_index == 2) {
+						img_a.src = 'image/yiyuan.jpg'
+					}
+					if (data.hd_index == 3) {
+						img_a.src = 'image/WechatIMG39.jpeg'
+					}
+					if (data.hd_index == 4) {
+						img_a.src = 'image/ronggang_b.jpg'
+					}
+
+					img_a.onload = function() {
+						cxt.drawImage(img_a, 0, 0, 787, 1092)
+						var can=canvas[1].toDataURL("image/png")
+						var img_b = new Image();
+						img_b.src = can
+						img_b.onload = function() {
+							if (data.hd_index == 2) {
+								cxt.drawImage(img_b, 88, 917, 110, 110)
+							} else if (data.hd_index == 3) {
+								cxt.drawImage(img_b, 66, 891, 110, 110)
+							} else {
+								cxt.drawImage(img_b, 646, 951, 110, 110)
+							}
+							var image = canvas[0].toDataURL('image/png')
+							var b64 = image.substring(22);
+							b64_image = image
+							$('#c_img').attr('src', image)
+							$.ajax({
+								type: "post",
+								url: 'http://intf.billdev.test511.com/index.php?g=Fawtoyota&m=Jxs&a=img_update', //测试
+								//url: 'http://intf.bill.test511.com/index.php?g=Fawtoyota&m=Jxs&a=img_update',//正式
+								data: {
+									img: image,
+									j_id: data.j_id,
+									hd_name: data.hd_name
+								},
+								success: function(res) {
+									console.log(res)
+								}
+							})
+						}
+					}
+				}
+
+
+				// var clipboard = new Clipboard("#url_lianjie");
+				// clipboard.on('success', function(e) {
+				// 	var u=navigator.userAgent,app=navigator.appVersion;
+				//  
+				// 	var isAndroid=u.indexOf('Android')>-1||u.indexOf('Linux')>-1;//android终端或者uc浏览器
+				//  
+				// 	var isiOS=!!u.match(/\(i[^;]+;(U;)?CPU.+MacOSX/);//ios终端
+				//  
+				// 	if(isAndroid){
+				// 		//$("#choose").attr('capture','camera');
+				// 		alert('复制成功！');
+				// 	}
+				// 	else{
+				// 		clipboard.on('success', function(e) {
+				// 			alert('复制成功！');
+				// 		});
+				// 		clipboard.on('error', function(e) {
+				// 		alert('请长按选择框进行复制!')
+				// 		});
+				// 	}
+				// 	
+				// });
+				//  
+				// clipboard.on('error', function(e) {
+				//     alert("复制失败！请重试！");
+				// });
+
+				function select() {
+					var doc = document,
+						text = doc.getElementById("keywords"),
+						range,
+						selection;
+					if (doc.body.createTextRange) {
+						range = document.body.createTextRange();
+						range.moveToElementText(text);
+						range.select();
+					} else if (window.getSelection) {
+						selection = window.getSelection();
+						range = document.createRange();
+						range.selectNodeContents(text);
+						selection.removeAllRanges();
+						selection.addRange(range);
+					} else {
+						alert("当前浏览器不支持点击复制功能");
+					}
+				}
+
+
+				function tishi_tanchuang() {
+					$('#tch').show()
+					setTimeout(function() {
+						$('#tch').hide()
+					}, 1500)
+				}
+			}
+		</script>
+
+	</body>
+
+</html>

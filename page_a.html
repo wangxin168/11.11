@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>经销店专属海报生成工具</title>
+    <script>
+        (function () {
+            var html = document.documentElement;
+            var width = html.getBoundingClientRect().width;
+            if (width < 640) {
+                html.style.fontSize = width / 15 + "px";
+            } else {
+                width = 640;
+                html.style.fontSize = width / 15 + "px";
+            }
+        })();
+    </script>
+    <!-- <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            /*禁止在IOS下点击元素显示高亮*/
+            -webkit-touch-callout: none;
+            /*禁止在IOS上点击元素显示系统默认菜单*/
+            -webkit-text-size-adjust: 100%;
+            /*禁止字体变化 */
+        }
+
+        body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #a10f19;
+            color: #999999;
+            font-size: 15px;
+            line-height: 1.42857143;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+
+        img {
+            display: block;
+            height: 100%;
+            width: 100%;
+        }
+
+        #app{
+            min-height: 26rem;
+            position: relative;
+        }
+
+        .ditu {
+            width: 100%;
+            height: 26rem;
+            background-image: url('../image/生成海报页面-1_01.jpg');
+            background-size: 100% 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+        .cont{
+            width: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            padding-top: 4.2rem;
+        }
+
+        .title {
+            width: 13.5rem;
+            height: 4rem;
+            margin: auto;
+        }
+
+        .wen {
+            height: 1rem;
+            width: 1rem;
+            position: absolute;
+            top: 2.8rem;
+            right: 1.3rem;
+            z-index: 200;
+        }
+
+        .text-cont {
+            margin: .8rem 0;
+            text-align: center;
+            color: #ffffff;
+            font-size: .65rem;
+            line-height: 1.8;
+            font-weight: bold;
+        }
+
+        .but-s {
+            width: 10rem;
+            margin: auto;
+        }
+
+        .but-k {
+            width: 100%;
+            /* width: auto; */
+            background-color: rgba(0, 0, 0, 0);
+            height: 1.6rem;
+            /* background-image: url('../image/组81.png');
+            background-size: 100% 100%; */
+            position: relative;
+            border: 0;
+            padding: 0;
+            margin: 0;
+            border-radius: 0;
+            /* color: #a10f19; */
+            color: transparent;
+            text-align: center;
+            text-align-last: center;
+            -webkit-text-align-last: center;
+            -webkit-text-align-last: center;
+            -khtml-text-align-last: center;
+            -moz-text-align-last: center;
+            -ms-text-align-last: center;
+            font-size: .6rem;
+            font-weight: bold;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+
+        }
+
+        select {
+            text-align: center;
+            text-align-last: center;
+            outline: none;
+            appearance: none;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+        }
+
+        select::-ms-expand {
+            display: none;
+        }
+
+        select ::after {
+            content: '';
+            display: none;
+        }
+
+        select ::before {
+            content: '';
+            display: none;
+        }
+
+        option {
+            text-align: center;
+        }
+        .select-ceng{
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-image: url('../image/组81.png');
+            background-size: 100% 100%;
+            font-size: .52rem;
+            font-weight: bold;
+            color: #ffffff;
+            line-height: 1.6rem;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .but-right {
+            height: .3rem;
+            width: .4rem;
+            position: absolute;
+            top: 0;
+            right: .6rem;
+            bottom: 0;
+            margin: auto;
+            z-index: 50;
+        }
+
+        .bot-buts {
+            display: flex;
+            padding: 10px 12px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bot-but {
+            height: 1.3rem;
+            width: 3.5rem;
+        }
+
+        #tch {
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: none;
+        }
+
+        .tch-cont {
+            height: 45px;
+            font-size: 15px;
+            width: 70%;
+            text-align: center;
+            line-height: 45px;
+            color: #f8f8f8;
+            position: absolute;
+            top: 50%;
+            margin-top: -22px;
+            left: 15%;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .g-tch{
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+        }
+        .g-tch-cont{
+                height: 15.48rem;
+                width: 12.33rem;
+            background-image: url('image/生成海报页面-1_06.png');
+            background-size: 100% 100%;
+            position: absolute;
+            top: 6rem;
+            left: 42%;
+            margin-left: -5rem;
+        }
+        .g-tch-off{
+            height: .8rem;
+            width: .8rem;
+            position: absolute;
+            top: -.9rem;
+            right: -.9rem;
+            background-image: url('image/生成海报页面-1_03.png');
+            background-size: 100% 100%;
+        }
+        .g-tch-title{
+            color: #ffffff;
+            font-size: .7rem;
+            font-weight: bold;
+            line-height: 1.8rem;
+            text-align: center;
+            padding-top: .3rem;
+        }
+        .g-tch-xian{
+            height: .3rem;
+            width: 90%;
+            margin: 0 auto .3rem;
+            background-image: url('image/矩形518.png');
+            background-size: 100% 100%;
+        }
+        .g-tch-text{
+            color: #ffffff;
+            font-size: .45rem;
+            width: 82%;
+            margin: auto;
+            height: 11.5rem;
+            padding: 0 .2rem;
+            overflow-y: auto;
+        }
+        .g-tch-text::-webkit-scrollbar-track-piece {
+  background-color: rgba(228, 226, 228, .8);
+  border-left: 1px solid rgba(0, 0, 0, 0);
+}
+.g-tch-text::-webkit-scrollbar {
+  width: 5px;
+  height: 13px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.g-tch-text::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  background-clip: padding-box;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  min-height: 28px;
+}
+.g-tch-text::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="ditu"></div>
+        <div class="cont">
+            <div class="title">
+                <img class="title-k" src="../image/标题.png">
+            </div>
+            <div class="text-cont">
+                <div class="text-text">请选择要参与的11.11丰趣狂欢惠活动</div>
+                <div class="text-text">并选择您经销店名称及所在省份、城市</div>
+                <div class="text-text">点击 “提交” 按钮</div>
+                <div class="text-text">即可生成专属于您经销店的活动海报</div>
+            </div>
+            <div class="but-s">
+                <div style="height: 1.6rem;width: 100%;position: relative;margin-bottom: .5rem;">
+                    <div id="huodong_ceng" class="select-ceng">请选择活动</div>
+                    <select id="huodong" class="but-k">
+                        <option value="f">请选择活动</option>
+                        <option value="1">全新RAV4荣放抢拍【限量】活动</option>
+                        <option value="2">一元试驾活动</option>
+                        <option value="3">11.11丰趣拼手速赢好礼H5活动</option>
+                        <option value="4">全新RAV4荣放抢拍【限时】活动</option>
+                       <!--<option value="5">购车抵扣卷活动</option>
+                        <option value="6">11.11丰趣狂欢惠活动【商城直通车】</option> --> 
+                    </select>
+                    <div class="but-right">
+                        <img src="../image/多边形1.png" alt="">
+                    </div>
+                </div>
+
+
+
+
+                <div style="height: 1.6rem;width: 100%;position: relative;margin-bottom: .5rem;">
+                        <div id="province_ceng" class="select-ceng">请选择省份</div>
+
+                    <div class="but-right">
+                        <img src="../image/多边形1.png" alt="">
+                    </div>
+                    <select id="ftms_province" class="but-k">
+                    </select>
+
+                </div>
+                <div style="height: 1.6rem;width: 100%;position: relative;margin-bottom: .5rem;">
+                        <div id="city_ceng" class="select-ceng">请选择城市</div>
+
+                    <select id="ftms_city" class="but-k">
+                        <option id="quxian" value='f'>请选择城市</option>
+                    </select>
+                    <div class="but-right">
+                        <img src="../image/多边形1.png" alt="">
+                    </div>
+
+                </div>
+                <div style="height: 1.6rem;width: 100%;position: relative;margin-bottom: .5rem;">
+                        <div id="dealer_ceng" class="select-ceng">请选择经销店</div>
+
+                    <select id="ftms_dealer" class="but-k">
+                        <option id="jingxuaodian" value='f'>请选择经销店</option>
+                    </select>
+                    <div class="but-right">
+                        <img src="../image/多边形1.png" alt="">
+                    </div>
+
+                </div>
+                <div class="bot-buts">
+                    <div class="bot-but" id="tijiao"><img src="../image/提交.jpg" alt=""></div>
+                    <!--<div class="bot-but"><img src="../image/退出.jpg" alt=""></div>-->
+                </div>
+            </div>
+        </div>
+
+        <div class="wen">
+            <img src="../image/icon.png" alt="">
+        </div>
+        
+        <div class="g-tch">
+            <div class="g-tch-cont">
+                <div class="g-tch-title">使用规则</div>
+                <div class="g-tch-xian"></div>
+                <div class="g-tch-text">
+                    <div style="text-align: center;font-weight: bold;margin-top: 0.3rem;">使用时间</div>
+                    <div>2019年11月5日 10:00-11月13日24：00</div>
+                    <div style="text-align: center;font-weight: bold;margin-top: 0.3rem;">使用说明</div>
+                    <div>1、进入微信H5链接，选择活动名称及省份、城市、经销店，生成宣传播海报</div>
+                    <div>2、生成的传播海报为该经销店的专属海报，仅限该经销店传播使用</div>                
+                    <div>3、用户留资所选经销店默认为生成海报经销店</div>                   
+                    <div style="text-align: center;font-weight: bold;margin-top: 0.3rem;">活动说明</div>
+                    <div><div style="font-size: .45rem;">1、<span style="font-size: 0.45rem;font-weight: bold;">【全新RAV4荣放抢拍（限量）活动】</span></div>
+                         <div><span style="font-size: .45rem;font-weight: bold;">活动介绍：</span>11月5日-11月13日用户登录一汽丰田官方商城，参与全新RAV4荣放抢拍活动，选择全新RAV4荣放下订，支付1元，于12月31日前购车即可获得全新RAV4荣放购车礼</div>
+                    </div>
+                    <div><div style="font-size: .45rem;">2、<span style="font-size: 0.45rem;font-weight: bold;">【1元试驾活动】</span></div>
+                        <div><span style="font-size: .45rem;font-weight: bold;">活动介绍：</span>11月5日-11月13日用户登录一汽丰田官方商城，参与11.11丰趣狂欢惠一元试驾活动，支付1元下订，并于11月30日（含）前到店试驾，即可获得试驾礼</div>
+                    </div>  
+                    <div><div style="font-size: .45rem;">3、<span style="font-size: 0.45rem;font-weight: bold;">【拼手速赢好礼H5活动】</span></div>
+                        <div><span style="font-size: .45rem;font-weight: bold;">活动介绍：</span>11月5日-11月13日用户登录【一汽丰田官方微信】参加活动，11秒内点击屏幕购物车66次（含）以上的用户，将会获得50元京东充值卡，点击“立即领取”按钮，提交个人信息，并于11月30日前（含）到一汽丰田任意经销店进行核销即可获取</div>
+                    </div>                
+                    <div style="text-align: center;font-weight: bold;margin-top: 0.3rem;">注意事项</div>
+                    <div>1、活动上线即可生成该活动对应传播海报</div>         
+                    <div>2、生成传播海报后长按保存，即可传播分享</div>                 
+                    <div>3、活动结束，该活动海报生成功能关闭</div>                 
+                    <div>4、本次活动咨询电话：400 810 1210</div>                 
+                </div>
+                <div class="g-tch-off"></div>
+            </div>
+        </div>
+
+        <div id="tch">
+            <div class="tch-cont">请选择活动、省份、城市、经销店</div>
+        </div>
+
+    </div>
+
+    <!-- <script src="js/vue.js"></script> -->
+    <!-- <script src="js/vue-resource.js"></script> -->
+    <script type="text/javascript">
+        /**
+     * Created by Hai on 17/4/12.
+     */
+        var HOST = 'https://api.ftms.com.cn/';
+        var get_province_url = HOST + '/Openapi/SetClues/getCity1';//活动
+        var get_city_url = HOST + '/Openapi/SetClues/getRegionCity';
+        var get_dealer_url = HOST + '/Openapi/SetClues/getDealer';
+        var get_car_url = HOST + '/Openapi/SetClues/getCar';
+        var get_models_url = HOST + '/Openapi/SetClues/getModels';
+        var get_buying_time_url = HOST + '/Openapi/SetClues/buyingTime';
+        //id閫夋嫨鍣ㄥ畾涔� 鐪侊細province  鍩庡競锛歝ity  缁忛攢鍟嗭細dealer 杞︾郴 car 杞﹀瀷 models  璐溅鏃堕棿 buying_time
+
+        $('.wen').click(function(){
+            $('.g-tch').show()
+        })
+        $('.g-tch-off').click(function(){
+            $('.g-tch').hide()
+        })
+
+        //鍔犺浇鑾峰彇鐪�
+        $.ajax({
+            type: "get",
+            url: get_province_url,
+            data: { 'cid': 0 },
+            xhrFields: {
+                withCredentials: true
+            },
+            crossDomian: true,
+            success: function (msg) {
+                var provHtmlStr = '';
+                for (var i = 0; i < msg.length; i++) {
+                    provHtmlStr = provHtmlStr + '<option value="' + msg[i]['cid'] + '" rel="' + msg[i]["name"] + '">' + msg[i]["name"] + '</option>';
+                }
+
+                $("#ftms_province").append(provHtmlStr);
+            }
+        });
+
+        //监听活动 选择
+        $('#huodong').change(function(){
+            $('#huodong_ceng').text($('#huodong option:selected').text())
+        })
+
+        //监听城市 选择
+        $("#ftms_province").change(function () {
+            var cid = $(this).val();
+			// console.log(cid)
+            $('#province_ceng').text($('#ftms_province option:selected').text())
+
+            $("#ftms_dealer").html('<option value="0">请选择经销店</option>')
+            if (cid != '') {
+                $.ajax({
+                    type: "post",
+                    url: get_city_url,
+                    data: { 'cid': cid },
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomian: true,
+                    success: function (msg) {
+                        $("#quxian").remove()
+                        $("#jingxiaodian").remove()
+                        $("#ftms_city").html('');
+                        var cityHtmlStr = '';
+                        for (var i = 0; i < msg.length; i++) {
+                            cityHtmlStr = cityHtmlStr + '<option value="' + msg[i]['cid'] + '" rel="' + msg[i]['name'] + '">' + msg[i]['name'] + '</option>';
+                        }
+                        $("#ftms_city").append(cityHtmlStr);
+                    }
+                });
+            }
+        })
+
+        //监听区县选择
+        $("#ftms_city").change(function () {
+            var city = $(this).find("option:selected").attr('rel');
+			// console.log(city)
+            $('#city_ceng').text($('#ftms_city option:selected').text())
+            var province = $("#ftms_province").find("option:selected").attr('rel');
+			// console.log(province)
+            if (city != '' || province != '') {
+                $("#ftms_dealer").html('<option value="0">请选择经销店</option>')
+                $.ajax({
+                    type: "post",
+                    url: get_dealer_url,
+                    data: { 'cityName': city, 'provinceName': province },
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomian: true,
+                    success: function (msg) {
+                        var data = msg['data'];
+                        var dealHtmlStr = '';
+                        for (var i = 0; i < data.length; i++) {
+                            dealHtmlStr = dealHtmlStr + '<option value="' + data[i]['id'] + '">' + data[i]['name'] + '</option>';
+                        }
+                        $("#ftms_dealer").append(dealHtmlStr);
+                    }
+                });
+            }
+        })
+
+        //监听经销店 选择
+        $('#ftms_dealer').change(function(){
+            $('#dealer_ceng').text($('#ftms_dealer option:selected').text())
+
+        })
+
+        $("#tijiao").click(function () {
+            var hd_index = $('#huodong').val()
+            var hd_name = $('#huodong option:selected').text()
+            var sheng_cid = $("#ftms_province").val()
+            var sheng_name = $("#ftms_province option:selected").text()
+            var shi_cid = $("#ftms_city").val()
+			
+            var shi_name = $("#ftms_city option:selected").text()
+            var dian_cid = $("#ftms_dealer").val()
+            var dian_name = $("#ftms_dealer option:selected").text()
+			if(shi_cid==110000){
+				shi_cid=110100
+			}else if(shi_cid==120000){
+				shi_cid=120100
+			}else if(shi_cid==500000){
+				shi_cid=500100
+			}else if(shi_cid==310000){
+				shi_cid=310100
+			}
+            if (shi_cid == 'f' || sheng_cid == 'f' || dian_cid == 'f' || sheng_cid == 0 || dian_cid == 0) {
+                tishi_tanchuang()
+                return
+            }
+            var data = {
+                hd_index: hd_index,
+                hd_name: hd_name,
+                provinceid: sheng_cid,
+                provincename: sheng_name,
+                cityid: shi_cid,
+                cityname: shi_name,
+                j_id: dian_cid,
+                j_name: dian_name,
+            }
+            sessionStorage.setItem("demokey", JSON.stringify(data));
+
+            // console.log(shi_cid)
+            // var dt = sessionStorage.getItem("demokey");
+
+            window.location.href = "page_b.html"
+
+        })
+        function tishi_tanchuang() {
+            $('#tch').show()
+            setTimeout(function () {
+                $('#tch').hide()
+            }, 1500)
+        }
+
+//鑾峰彇杞︾郴
+// $.ajax({
+//     type:'get',
+//     url:get_car_url ,
+//     xhrFields: {
+//         withCredentials: true
+//     },
+//     crossDomian: true,
+//     success:function (msg) {
+//        var carHtmlStr = '<option>璇烽€夋嫨杞︾郴</option>' ;
+//        for (var i=0;i<msg.length;i++){
+//            carHtmlStr = carHtmlStr + '<option value="'+msg[i]['cid']+'">'+msg[i]['name']+'</option>' ;
+//        }
+//        $("#ftms_car").append(carHtmlStr) ;
+//     }
+// }) ;
+
+//鑾峰彇杞﹀瀷
+// $("#ftms_car").change(function () {
+//     var cid = $(this).val() ;
+//     if( cid != '' ){
+//         $.ajax({
+//             type:'post',
+//             data:{'cid':cid},
+//             url:get_models_url,
+//             xhrFields: {
+//                 withCredentials: true
+//             },
+//             crossDomian: true,
+//             success:function (msg) {
+//                 $("#ftms_models").html('<option>璇烽€夋嫨杞﹀瀷</option>') ;
+//                 var ModelsHtmlStr = '' ;
+//                 for (var i=0;i<msg.length;i++){
+//                     ModelsHtmlStr = ModelsHtmlStr + '<option value="'+msg[i]['cid']+'">'+msg[i]['name']+msg[i]['version']+'</option>' ;
+//                 }
+//                 $("#ftms_models").append(ModelsHtmlStr) ;
+//             }
+//         }) ;
+//     }
+// })
+
+//璐拱鏃堕棿
+// $.ajax({
+//     type:"get",
+//     url:get_buying_time_url ,
+//     xhrFields: {
+//         withCredentials: true
+//     },
+//     crossDomian: true,
+//     success:function (msg) {
+//         var buyHtmlStr = '' ;
+//         for(var i=0;i<msg.length;i++){
+//             buyHtmlStr = buyHtmlStr + '<option value="'+msg[i]['cid']+'">'+msg[i]["name"]+'</option>' ;
+//         }
+
+//         $("#ftms_buying_time").append(buyHtmlStr) ;
+//     }
+// }) ;
+
+    </script>
+    <!-- <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                but_a_val: '选择活动',
+                but_b_val: '城市',
+                but_c_val: '区县',
+                but_d_val: '经销店',
+            },
+            created() {
+                this.get_data()
+            },
+            methods: {
+                get_data(){
+                    //获取数据
+                },
+
+
+                //点击提交按钮
+                click_tijiao(){
+                    window.location.href="page_b.html"
+                },
+            }
+        })
+    </script> -->
+</body>
+
+</html>
